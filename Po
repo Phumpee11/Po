@@ -1,0 +1,51 @@
+Mwxey Mw (function() {
+    'use strict';
+
+    const but = document.createElement("button");
+    but.style.position = "absolute";
+    but.style.top = "0";
+    but.style.left = "0";
+    but.style["z-index"] = "999";
+    but.innerText = "Fill correct values";
+
+    function fillItem(i, value) {
+        const is = i.toString();
+        const textbox = document.getElementById("textbox" + is);
+        if (textbox !== null) {
+            textbox.innerText = value;
+            return true
+        }
+
+        const select = document.getElementById("selectablediv" + is);
+        if (select !== null) {
+            if (select.classList.contains("selectedselectablediv") !== (value === "select:yes")) {
+                console.log(`selectanswer({is})`);
+                window.selectanswer(i);
+            }
+            return true
+        }
+    }
+    function clickHandler() {
+        but.remove();
+
+        const data = JSON.parse(window.contenidojson);
+        const failed = [];
+        data.forEach(function(values, i){
+            const is = i.toString();
+            try {
+                if (fillItem(i, values[0])) {
+                    return
+                }
+            } catch (e) {}
+            failed.push(is);
+        });
+        const sub = document.getElementById("capafinish");
+        sub.scrollIntoView({block: "center"});
+        if (failed.length > 0) {
+            alert("Failed to autofill these items: " + failed.join(", "));
+        }
+
+    }
+    but.addEventListener("click", clickHandler);
+    document.getElementById("capa1").insertAdjacentElement("afterbegin", but);
+})();
